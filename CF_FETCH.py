@@ -50,7 +50,7 @@ def get_api_signature(method: str, params: Dict[str, str], api_key: str, api_sec
 
 def fetch_submissions(handle: str, api_key: str, api_secret: str) -> List[Dict[str, Any]]:
     """
-    Fetch submissions from Codeforces API.
+    Fetch ALL submissions from Codeforces API using pagination.
     
     Args:
         handle: Codeforces username
@@ -58,29 +58,55 @@ def fetch_submissions(handle: str, api_key: str, api_secret: str) -> List[Dict[s
         api_secret: Codeforces API secret
         
     Returns:
-        List of submission data
+        List of ALL submission data
         
     Raises:
         Exception: If API request fails
     """
     method = "user.status"
     url = f"{API_BASE_URL}/{method}"
-    params = {
-        "handle": handle
-    }
-    api_sig = get_api_signature(method, params.copy(), api_key, api_secret)
-    params["apiSig"] = api_sig
+    
+    all_submissions = []
+    count = 1000  # Maximum submissions per request
+    start = 1
+    
+    print(f"Fetching ALL submissions for user: {handle}...")
+    
+    while True:
+        params = {
+            "handle": handle,
+            "from": start,
+            "count": count
+        }
+        api_sig = get_api_signature(method, params.copy(), api_key, api_secret)
+        params["apiSig"] = api_sig
 
-    print(f"Fetching submissions for user: {handle}...")
-    try:
-        resp = requests.get(url, params=params, timeout=30).json()
-        if resp["status"] != "OK":
-            raise Exception(f"API Error: {resp.get('comment', 'Unknown error')}")
-        return resp["result"]
-    except requests.RequestException as e:
-        raise Exception(f"Network error: {e}")
-    except json.JSONDecodeError:
-        raise Exception("Invalid response from Codeforces API")
+        try:
+            print(f"Fetching submissions {start} to {start + count - 1}...")
+            resp = requests.get(url, params=params, timeout=30).json()
+            if resp["status"] != "OK":
+                raise Exception(f"API Error: {resp.get('comment', 'Unknown error')}")
+            
+            batch = resp["result"]
+            all_submissions.extend(batch)
+            
+            print(f"Retrieved {len(batch)} submissions (Total so far: {len(all_submissions)})")
+            
+            # If we got fewer submissions than requested, we've reached the end
+            if len(batch) < count:
+                break
+                
+            start += count
+            # Add a small delay to respect API rate limits
+            time.sleep(2)
+            
+        except requests.RequestException as e:
+            raise Exception(f"Network error: {e}")
+        except json.JSONDecodeError:
+            raise Exception("Invalid response from Codeforces API")
+    
+    print(f"✅ Successfully fetched {len(all_submissions)} total submissions!")
+    return all_submissions
 
 def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
     """
@@ -92,7 +118,9 @@ def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
     Returns:
         Dictionary containing metadata for all submissions
     """
-    accepted = {}
+    # Filter only accepted submissions and keep the LATEST submission per problem
+    problem_latest = {}
+    
     for sub in submissions:
         if sub.get("verdict") != "OK":
             continue
@@ -103,13 +131,17 @@ def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
         index = problem.get("index", f"Sub{sub.get('id', 'Unknown')}")
         
         key = f'{contest_id}-{index}'
-        if key in accepted and sub.get("creationTimeSeconds", 0) < accepted[key].get("creationTimeSeconds", 0):
-            continue
-        accepted[key] = sub
+        
+        # Keep only the LATEST accepted submission for each problem
+        if (key not in problem_latest) or \
+           (sub.get("creationTimeSeconds", 0) > problem_latest[key].get("creationTimeSeconds", 0)):
+            problem_latest[key] = sub
 
+    # Now process the latest submissions
+    accepted = problem_latest
     metadata = {}
     count = len(accepted)
-    print(f"Processing {count} latest accepted submissions...")
+    print(f"Processing {count} unique accepted problems (latest submissions only)...")
 
     for i, sub in enumerate(sorted(accepted.values(), key=lambda x: -x.get("creationTimeSeconds", 0))):
         problem = sub.get("problem", {})
@@ -156,7 +188,9 @@ def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
         
         try:
             with open(filepath, "w", encoding="utf-8") as f:
-                f.write(sub.get("program", "// Code not available"))
+                # Try both 'source' and 'program' fields for code content
+                code_content = sub.get("source") or sub.get("program", "// Code not available")
+                f.write(code_content)
         except Exception as e:
             print(f"Warning: Could not save file {filepath}: {e}")
 
