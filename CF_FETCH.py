@@ -107,15 +107,16 @@ def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
     print(f"Processing {count} latest accepted submissions...")
 
     for i, sub in enumerate(sorted(accepted.values(), key=lambda x: -x["creationTimeSeconds"])):
-        problem = sub["problem"]
+        problem = sub.get("problem", {})
         contest_id = sub["contestId"]
-        index = problem["index"]
-        name = problem["name"]
+        index = problem.get("index", "Unknown")
+        name = problem.get("name", "Unknown Problem")
         url = f"https://codeforces.com/contest/{contest_id}/problem/{index}"
         sub_id = f"CF{sub['id']}"
         sub_url = f"https://codeforces.com/contest/{contest_id}/submission/{sub['id']}"
         lang = sub["programmingLanguage"]
-        tags = problem.get("tags", [])
+        # Handle cases where tags might not be accessible
+        tags = problem.get("tags", []) if problem else []
         dt = datetime.fromtimestamp(sub["creationTimeSeconds"])
         ts = dt.strftime("%b/%d/%Y %H:%M")
 
@@ -195,10 +196,16 @@ def generate_readme(metadata: Dict[str, Any]) -> None:
         
     rows = []
     sorted_meta = list(metadata.items())
+    # Sort by submission ID (newest first, so they get lower numbers)
     sorted_meta.sort(key=lambda x: -int(x[0].replace("CF", "")))
 
     for i, (sub_id, data) in enumerate(sorted_meta, 1):
-        tags_str = ' '.join(f'`{tag}`' for tag in data['tags']) if data['tags'] else 'No tags'
+        # Handle empty or missing tags
+        if data['tags'] and len(data['tags']) > 0:
+            tags_str = ' '.join(f'`{tag}`' for tag in data['tags'])
+        else:
+            tags_str = ""  # Empty for problems without accessible tags
+            
         row = f"| {i} | [{data['problem_index']} - {data['problem_name']}]({data['problem_url']}) | [{data['language']}]({data['submission_url']}) | {tags_str} | {data['timestamp']} |"
         rows.append(row)
 
