@@ -1,6 +1,17 @@
-# Example Output
+# Exampl# Codeforces Submissions
 
-This shows what your generated README.md will look like after running the script.
+Total accepted submissions: **20**
+
+---
+
+| # | Title | Solution | Tags | Submitted |
+|:-:|-------|----------|------|-----------|
+| 20 | [A - Recent Problem](https://codeforces.com/contest/1500/problem/A) | [GNU C++17](https://codeforces.com/contest/1500/submission/987654321) | `implementation` `greedy` `*1200` | Jan/15/2025 14:30 |
+| 19 | [Private Contest Problem](https://codeforces.com/contest/1450) | [Python 3](https://codeforces.com/contest/1450/submission/987654322) |  | Jan/14/2025 18:45 |
+| 18 | [B - Another Problem](https://codeforces.com/contest/1400/problem/B) | [Python 3](https://codeforces.com/contest/1400/submission/987654320) | `*800` | Jan/14/2025 16:22 |
+| 17 | [Private Contest Problem](https://codeforces.com/contest/1350) | [GNU C++17](https://codeforces.com/contest/1350/submission/987654319) |  | Jan/13/2025 20:15 |
+| 16 | Problem_123456 - Unknown Problem | GNU C++17 |  | Unknown Date |
+| 15 | [A - Watermelon](https://codeforces.com/contest/4/problem/A) | [GNU C++17](https://codeforces.com/contest/4/submission/123456789) | `brute force` `math` `*800` | Dec/15/2024 14:30 |his shows what your generated README.md will look like after running the script.
 
 **🎯 This is the file you'll upload to your new GitHub repository!**
 
@@ -24,7 +35,10 @@ Total accepted submissions: **18**
 
 *Generated automatically by [Codeforces Submission Fetcher](https://github.com/Andrew-Velox/codeforces-submission-fetcher)*
 
-**Note:** Difficulty ratings are shown with an asterisk (e.g., `*1200`) after the problem tags.
+**Note:** 
+- Difficulty ratings are shown with an asterisk (e.g., `*1200`) after the problem tags.
+- Private contest submissions are included and marked as "Private Contest Problem"
+- All accepted submissions are captured, even if problem details are inaccessible
 
 ## 📂 Directory Structure After Running:
 

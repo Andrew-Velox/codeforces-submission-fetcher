@@ -122,15 +122,22 @@ def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
     problem_latest = {}
     
     for sub in submissions:
-        if sub.get("verdict") != "OK":
+        if sub.get("verdict", "").strip().upper() != "OK":
             continue
 
         # Create a unique key, handle missing problem data gracefully
         problem = sub.get("problem", {})
         contest_id = sub.get("contestId", "Unknown")
-        index = problem.get("index", f"Sub{sub.get('id', 'Unknown')}")
+        submission_id = sub.get("id", "Unknown")
         
-        key = f'{contest_id}-{index}'
+        # For problems without accessible data (private contests, etc.), use submission ID as unique identifier
+        if problem and problem.get("index"):
+            index = problem.get("index")
+            key = f'{contest_id}-{index}'
+        else:
+            # Fallback for submissions without problem data
+            index = f"Private_{submission_id}"
+            key = f'{contest_id}-{index}'
         
         # Keep only the LATEST accepted submission for each problem
         if (key not in problem_latest) or \
@@ -141,7 +148,7 @@ def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
     accepted = problem_latest
     metadata = {}
     count = len(accepted)
-    print(f"Processing {count} unique accepted problems (latest submissions only)...")
+    print(f"Processing {count} unique accepted submissions (including private/inaccessible problems)...")
 
     for i, sub in enumerate(sorted(accepted.values(), key=lambda x: -x.get("creationTimeSeconds", 0))):
         problem = sub.get("problem", {})
@@ -149,21 +156,31 @@ def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
         submission_id = sub.get("id", "Unknown")
         
         # Handle missing problem information gracefully
-        index = problem.get("index", f"Problem_{submission_id}")
-        name = problem.get("name", f"Problem {index}")
+        if problem and problem.get("index"):
+            index = problem.get("index")
+            name = problem.get("name", f"Problem {index}")
+        else:
+            # For private contests or inaccessible problems
+            index = f"Private_{submission_id}"
+            name = "Private Contest Problem"
         
         # Create URLs even with missing data
-        if contest_id != "Unknown" and index != f"Problem_{submission_id}":
-            url = f"https://codeforces.com/contest/{contest_id}/problem/{index}"
+        if contest_id != "Unknown" and problem and problem.get("index"):
+            url = f"https://codeforces.com/contest/{contest_id}/problem/{problem.get('index')}"
+            sub_url = f"https://codeforces.com/contest/{contest_id}/submission/{submission_id}"
+        elif contest_id != "Unknown":
+            # For private contests, link to contest but not specific problem
+            url = f"https://codeforces.com/contest/{contest_id}"
             sub_url = f"https://codeforces.com/contest/{contest_id}/submission/{submission_id}"
         else:
             # Fallback URLs for missing contest data
-            url = f"https://codeforces.com/problemset/problem/{contest_id}/{index}" if contest_id != "Unknown" else "#"
+            url = "#"
             sub_url = f"https://codeforces.com/submission/{submission_id}" if submission_id != "Unknown" else "#"
         
         sub_id = f"CF{submission_id}"
         lang = sub.get("programmingLanguage", "Unknown Language")
-        # Handle cases where tags might not be accessible
+        
+        # Handle cases where tags might not be accessible (common in private contests)
         tags = problem.get("tags", []) if problem else []
         
         # Add difficulty rating to tags if available
@@ -211,6 +228,7 @@ def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
         with open(JSON_FILE, "w", encoding="utf-8") as f:
             json.dump(metadata, f, indent=2)
         print(f"Metadata saved to {JSON_FILE}")
+        print(f"📊 Included {sum(1 for v in metadata.values() if 'Private_' in v['problem_index'])} private/inaccessible submissions")
     except Exception as e:
         print(f"Warning: Could not save metadata file: {e}")
         
@@ -293,8 +311,11 @@ def generate_readme(metadata: Dict[str, Any]) -> None:
         timestamp = data.get('timestamp', 'Unknown Date')
         
         # Create table row with fallback values
-        if problem_url != '#':
+        if problem_url != '#' and not problem_index.startswith('Private_'):
             title_link = f"[{problem_index} - {problem_name}]({problem_url})"
+        elif problem_url != '#' and problem_index.startswith('Private_'):
+            # For private contests, link to contest but indicate it's private
+            title_link = f"[{problem_name}]({problem_url})"
         else:
             title_link = f"{problem_index} - {problem_name}"
             
