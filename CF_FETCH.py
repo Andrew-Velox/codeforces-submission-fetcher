@@ -228,14 +228,20 @@ def get_user_input() -> tuple:
         Tuple containing (handle, api_key, api_secret)
     """
     # Try to load from config file first
-    try:
-        import config
-        if hasattr(config, 'HANDLE') and hasattr(config, 'API_KEY') and hasattr(config, 'API_SECRET'):
-            if config.HANDLE and config.API_KEY and config.API_SECRET:
-                print("✅ Using credentials from config.py")
-                return config.HANDLE, config.API_KEY, config.API_SECRET
-    except ImportError:
-        pass
+    config_path = os.path.join(os.path.dirname(__file__), "config.py")
+    if os.path.exists(config_path):
+        try:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("config", config_path)
+            config = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(config)
+            if hasattr(config, 'HANDLE') and hasattr(config, 'API_KEY') and hasattr(config, 'API_SECRET'):
+                if config.HANDLE and config.API_KEY and config.API_SECRET:
+                    print("✅ Using credentials from config.py")
+                    return config.HANDLE, config.API_KEY, config.API_SECRET
+        except Exception as e:
+            print(f"Warning: Could not load config.py: {e}")
+    # Fall back to interactive input
     
     # Fall back to interactive input
     print("=== Codeforces Submission Fetcher ===")
