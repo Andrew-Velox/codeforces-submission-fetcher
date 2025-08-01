@@ -97,8 +97,13 @@ def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
         if sub.get("verdict") != "OK":
             continue
 
-        key = f'{sub["contestId"]}-{sub["problem"]["index"]}'
-        if key in accepted and sub["creationTimeSeconds"] < accepted[key]["creationTimeSeconds"]:
+        # Create a unique key, handle missing problem data gracefully
+        problem = sub.get("problem", {})
+        contest_id = sub.get("contestId", "Unknown")
+        index = problem.get("index", f"Sub{sub.get('id', 'Unknown')}")
+        
+        key = f'{contest_id}-{index}'
+        if key in accepted and sub.get("creationTimeSeconds", 0) < accepted[key].get("creationTimeSeconds", 0):
             continue
         accepted[key] = sub
 
@@ -106,19 +111,41 @@ def save_code_and_metadata(submissions: List[Dict[str, Any]]) -> Dict[str, Any]:
     count = len(accepted)
     print(f"Processing {count} latest accepted submissions...")
 
-    for i, sub in enumerate(sorted(accepted.values(), key=lambda x: -x["creationTimeSeconds"])):
+    for i, sub in enumerate(sorted(accepted.values(), key=lambda x: -x.get("creationTimeSeconds", 0))):
         problem = sub.get("problem", {})
-        contest_id = sub["contestId"]
-        index = problem.get("index", "Unknown")
-        name = problem.get("name", "Unknown Problem")
-        url = f"https://codeforces.com/contest/{contest_id}/problem/{index}"
-        sub_id = f"CF{sub['id']}"
-        sub_url = f"https://codeforces.com/contest/{contest_id}/submission/{sub['id']}"
-        lang = sub["programmingLanguage"]
+        contest_id = sub.get("contestId", "Unknown")
+        submission_id = sub.get("id", "Unknown")
+        
+        # Handle missing problem information gracefully
+        index = problem.get("index", f"Problem_{submission_id}")
+        name = problem.get("name", f"Problem {index}")
+        
+        # Create URLs even with missing data
+        if contest_id != "Unknown" and index != f"Problem_{submission_id}":
+            url = f"https://codeforces.com/contest/{contest_id}/problem/{index}"
+            sub_url = f"https://codeforces.com/contest/{contest_id}/submission/{submission_id}"
+        else:
+            # Fallback URLs for missing contest data
+            url = f"https://codeforces.com/problemset/problem/{contest_id}/{index}" if contest_id != "Unknown" else "#"
+            sub_url = f"https://codeforces.com/submission/{submission_id}" if submission_id != "Unknown" else "#"
+        
+        sub_id = f"CF{submission_id}"
+        lang = sub.get("programmingLanguage", "Unknown Language")
         # Handle cases where tags might not be accessible
         tags = problem.get("tags", []) if problem else []
-        dt = datetime.fromtimestamp(sub["creationTimeSeconds"])
-        ts = dt.strftime("%b/%d/%Y %H:%M")
+        
+        # Add difficulty rating to tags if available
+        difficulty = problem.get("rating") if problem else None
+        if difficulty:
+            tags = tags + [f"*{difficulty}"]  # Add difficulty with asterisk to distinguish it
+        
+        # Handle missing timestamp
+        creation_time = sub.get("creationTimeSeconds", 0)
+        if creation_time > 0:
+            dt = datetime.fromtimestamp(creation_time)
+            ts = dt.strftime("%b/%d/%Y %H:%M")
+        else:
+            ts = "Unknown Date"
 
         folder = os.path.join(SAVE_DIR, str(contest_id))
         os.makedirs(folder, exist_ok=True)
@@ -196,8 +223,8 @@ def generate_readme(metadata: Dict[str, Any]) -> None:
         
     rows = []
     sorted_meta = list(metadata.items())
-    # Sort by submission ID (newest first in the table)
-    sorted_meta.sort(key=lambda x: -int(x[0].replace("CF", "")))
+    # Sort by submission ID (newest first in the table), handle cases where ID might be missing
+    sorted_meta.sort(key=lambda x: -int(x[0].replace("CF", "")) if x[0].replace("CF", "").isdigit() else 0)
 
     # Reverse numbering: newest submission gets the highest number
     total_count = len(sorted_meta)
@@ -206,12 +233,43 @@ def generate_readme(metadata: Dict[str, Any]) -> None:
         row_number = total_count - i
         
         # Handle empty or missing tags
-        if data['tags'] and len(data['tags']) > 0:
-            tags_str = ' '.join(f'`{tag}`' for tag in data['tags'])
+        if data.get('tags') and len(data['tags']) > 0:
+            # Separate regular tags from difficulty rating
+            regular_tags = []
+            difficulty_tag = ""
+            
+            for tag in data['tags']:
+                if tag.startswith('*'):
+                    # This is a difficulty rating
+                    difficulty_tag = f" `{tag}`"
+                else:
+                    # This is a regular tag
+                    regular_tags.append(f'`{tag}`')
+            
+            tags_str = ' '.join(regular_tags) + difficulty_tag
         else:
             tags_str = ""  # Empty for problems without accessible tags
+        
+        # Handle missing URLs gracefully
+        problem_url = data.get('problem_url', '#')
+        submission_url = data.get('submission_url', '#')
+        problem_index = data.get('problem_index', 'Unknown')
+        problem_name = data.get('problem_name', 'Unknown Problem')
+        language = data.get('language', 'Unknown')
+        timestamp = data.get('timestamp', 'Unknown Date')
+        
+        # Create table row with fallback values
+        if problem_url != '#':
+            title_link = f"[{problem_index} - {problem_name}]({problem_url})"
+        else:
+            title_link = f"{problem_index} - {problem_name}"
             
-        row = f"| {row_number} | [{data['problem_index']} - {data['problem_name']}]({data['problem_url']}) | [{data['language']}]({data['submission_url']}) | {tags_str} | {data['timestamp']} |"
+        if submission_url != '#':
+            solution_link = f"[{language}]({submission_url})"
+        else:
+            solution_link = language
+            
+        row = f"| {row_number} | {title_link} | {solution_link} | {tags_str} | {timestamp} |"
         rows.append(row)
 
     table = [
