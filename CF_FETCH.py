@@ -196,17 +196,22 @@ def generate_readme(metadata: Dict[str, Any]) -> None:
         
     rows = []
     sorted_meta = list(metadata.items())
-    # Sort by submission ID (newest first, so they get lower numbers)
+    # Sort by submission ID (newest first in the table)
     sorted_meta.sort(key=lambda x: -int(x[0].replace("CF", "")))
 
-    for i, (sub_id, data) in enumerate(sorted_meta, 1):
+    # Reverse numbering: newest submission gets the highest number
+    total_count = len(sorted_meta)
+    for i, (sub_id, data) in enumerate(sorted_meta):
+        # Reverse the numbering: newest = highest number
+        row_number = total_count - i
+        
         # Handle empty or missing tags
         if data['tags'] and len(data['tags']) > 0:
             tags_str = ' '.join(f'`{tag}`' for tag in data['tags'])
         else:
             tags_str = ""  # Empty for problems without accessible tags
             
-        row = f"| {i} | [{data['problem_index']} - {data['problem_name']}]({data['problem_url']}) | [{data['language']}]({data['submission_url']}) | {tags_str} | {data['timestamp']} |"
+        row = f"| {row_number} | [{data['problem_index']} - {data['problem_name']}]({data['problem_url']}) | [{data['language']}]({data['submission_url']}) | {tags_str} | {data['timestamp']} |"
         rows.append(row)
 
     table = [
