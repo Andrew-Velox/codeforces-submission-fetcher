@@ -1,6 +1,8 @@
 # Example Output
 
-This shows what your generated README.md will look like after running the script:
+This shows what your generated README.md will look like after running the script.
+
+**🎯 This is the file you'll upload to your new GitHub repository!**
 
 ---
 
@@ -20,14 +22,24 @@ Total accepted submissions: **15**
 
 *Generated automatically by [Codeforces Submission Fetcher](https://github.com/Andrew-Velox/codeforces-submission-fetcher)*
 
-## Directory Structure After Running:
+## 📂 Directory Structure After Running:
 
 ```
-submissions/
-├── 4/
-│   └── A.cpp
-├── 71/
-│   └── A.py
-└── 231/
-    └── A.cpp
+your-current-folder/
+├── README.md                    # 👈 Upload this to your new GitHub repo!
+├── submissions/                 # 👈 Upload this folder too!
+│   ├── 4/
+│   │   └── A.cpp
+│   ├── 71/
+│   │   └── A.py
+│   └── 231/
+│       └── A.cpp
+└── codeforces_submissions.json  # 👈 Metadata file (optional to upload)
 ```
+
+## 🚀 Ready for GitHub!
+
+After running the script, simply:
+1. Create a new repository called "SolvedProblems" (or any name you prefer)
+2. Upload the generated `README.md` and `submissions/` folder
+3. Your coding portfolio is ready to showcase! 🎉

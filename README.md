@@ -109,6 +109,49 @@ The generated README will contain a table like this:
 
 See [EXAMPLE_OUTPUT.md](EXAMPLE_OUTPUT.md) for a complete example.
 
+## 📁 Where to Find Your Generated Files
+
+After running the script successfully, you'll find the following files in your current directory:
+
+### Generated Files:
+- **`README.md`** - A beautifully formatted table of all your submissions
+- **`codeforces_submissions.json`** - Metadata file with detailed information
+- **`submissions/`** folder - Contains all your code files organized by contest ID
+
+### 🚀 Upload Your Submissions to GitHub
+
+Once you have your generated `README.md` and `submissions/` folder, you can create a showcase repository:
+
+1. **Create a new repository on GitHub** (e.g., "SolvedProblems" or "MyCodeforcesSolutions")
+
+2. **Upload your files**:
+   ```bash
+   # Create a new directory for your solutions
+   mkdir MyCodeforcesSolutions
+   cd MyCodeforcesSolutions
+   
+   # Copy the generated files
+   cp ../README.md .
+   cp -r ../submissions .
+   cp ../codeforces_submissions.json .
+   
+   # Initialize git and upload
+   git init
+   git add .
+   git commit -m "My Codeforces solved problems"
+   git branch -M main
+   git remote add origin https://github.com/yourusername/SolvedProblems.git
+   git push -u origin main
+   ```
+
+3. **Your repository will now showcase**:
+   - ✅ A professional README with all your solved problems
+   - 📂 Organized code files by contest
+   - 🏷️ Problem tags and submission details
+   - 📊 Automatic links to original problems and submissions
+
+**Example repository names**: `SolvedProblems`, `MyCodeforcesSolutions`, `CP-Solutions`, `AlgorithmicSolutions`
+
 ## Configuration
 
 You can modify the following variables in the script:

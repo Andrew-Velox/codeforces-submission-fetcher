@@ -287,6 +287,16 @@ def main():
         print(f"📊 Metadata saved in: {JSON_FILE}")
         print(f"📝 README generated: {README_FILE}")
         
+        print("\n" + "="*60)
+        print("🚀 NEXT STEPS:")
+        print("="*60)
+        print("1. Check your generated README.md file in this directory")
+        print("2. Review your organized code files in the submissions/ folder")
+        print("3. Create a new GitHub repository (e.g., 'SolvedProblems')")
+        print("4. Upload your README.md and submissions/ folder to showcase your solutions!")
+        print("\nYour Codeforces portfolio is ready to share! 🎉")
+        print("="*60)
+        
     except KeyboardInterrupt:
         print("\n\n❌ Operation cancelled by user.")
         sys.exit(1)
