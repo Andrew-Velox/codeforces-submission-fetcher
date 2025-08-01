@@ -1,6 +1,6 @@
 # Codeforces Submission Fetcher
 
-[![Python Version](https://img.shields.io/badge/python-3.6%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
@@ -19,7 +19,7 @@ A Python tool to fetch and organize your Codeforces submissions with automatic R
 
 ## Prerequisites
 
-- Python 3.6 or higher
+- Python 3.8 or higher
 - Codeforces API credentials (API Key and Secret)
 
 ## Installation
