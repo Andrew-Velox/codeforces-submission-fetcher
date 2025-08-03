@@ -335,12 +335,16 @@ def generate_readme(metadata: Dict[str, Any]) -> None:
 
     try:
         with open(README_FILE, "w", encoding="utf-8") as f:
-            f.write("# Codeforces Submissions\n\n")
-            f.write(f"Total accepted submissions: **{len(metadata)}**\n\n")
-            f.write("---\n\n")
+            f.write("# Submissions\n\n")
+            f.write("*Auto-generated with ❤️ using [Codeforces Submission Fetcher](https://github.com/Andrew-Velox/codeforces-submission-fetcher)*\n\n")
+            f.write("## Introduction\n\n")
+            f.write("A repository to keep track of problem solving practice, containing solutions from platforms:\n\n")
+            f.write("• **Codeforces**\n\n")
+            f.write("> Codeforces is a website which hosts competitive programming contests: [http://codeforces.com](http://codeforces.com)\n\n")
+            f.write("## Contents\n\n")
             f.write("\n".join(table))
             f.write("\n\n---\n\n")
-            f.write("*Generated automatically by [Codeforces Submission Fetcher](https://github.com/Andrew-Velox/codeforces-submission-fetcher)*\n")
+            f.write(f"**Total Solved Problems:** {len(metadata)}\n")
         print(f"README.md generated successfully with {len(metadata)} submissions.")
     except Exception as e:
         print(f"Error generating README: {e}")

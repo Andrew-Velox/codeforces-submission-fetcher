@@ -1,33 +1,40 @@
-# Exampl# Codeforces Submissions
+# Example Output
 
-Total accepted submissions: **20**
-
----
-
-| # | Title | Solution | Tags | Submitted |
-|:-:|-------|----------|------|-----------|
-| 20 | [A - Recent Problem](https://codeforces.com/contest/1500/problem/A) | [GNU C++17](https://codeforces.com/contest/1500/submission/987654321) | `implementation` `greedy` `*1200` | Jan/15/2025 14:30 |
-| 19 | [Private Contest Problem](https://codeforces.com/contest/1450) | [Python 3](https://codeforces.com/contest/1450/submission/987654322) |  | Jan/14/2025 18:45 |
-| 18 | [B - Another Problem](https://codeforces.com/contest/1400/problem/B) | [Python 3](https://codeforces.com/contest/1400/submission/987654320) | `*800` | Jan/14/2025 16:22 |
-| 17 | [Private Contest Problem](https://codeforces.com/contest/1350) | [GNU C++17](https://codeforces.com/contest/1350/submission/987654319) |  | Jan/13/2025 20:15 |
-| 16 | Problem_123456 - Unknown Problem | GNU C++17 |  | Unknown Date |
-| 15 | [A - Watermelon](https://codeforces.com/contest/4/problem/A) | [GNU C++17](https://codeforces.com/contest/4/submission/123456789) | `brute force` `math` `*800` | Dec/15/2024 14:30 |his shows what your generated README.md will look like after running the script.
+This shows what your generated README.md will look like after running the script.
 
 **🎯 This is the file you'll upload to your new GitHub repository!**
 
 ---
 
-# Codeforces Submissions
+# Submissions
 
-Total accepted submissions: **18**
+*Auto-generated with ❤️ using [Codeforces Submission Fetcher](https://github.com/Andrew-Velox/codeforces-submission-fetcher)*
 
----
+## Introduction
+
+A repository to keep track of problem solving practice, containing solutions from platforms:
+
+• **Codeforces**
+
+> Codeforces is a website which hosts competitive programming contests: [http://codeforces.com](http://codeforces.com)
+
+## Contents
 
 | # | Title | Solution | Tags | Submitted |
 |:-:|-------|----------|------|-----------|
-| 18 | [A - Recent Problem](https://codeforces.com/contest/1500/problem/A) | [GNU C++17](https://codeforces.com/contest/1500/submission/987654321) | `implementation` `greedy` `*1200` | Jan/15/2025 14:30 |
-| 17 | [B - Another Problem](https://codeforces.com/contest/1400/problem/B) | [Python 3](https://codeforces.com/contest/1400/submission/987654320) | `*800` | Jan/14/2025 16:22 |
-| 16 | Problem_123456 - Unknown Problem | GNU C++17 |  | Unknown Date |
+| 244 | [C - Nikita and LCM](https://codeforces.com/contest/1000/problem/C) | [C++17 (GCC 7-32)](https://codeforces.com/contest/1000/submission/123456789) | `brute force` `data structures` `dp` `*1200` | Jul/10/2024 |
+| 243 | [B - Light It Up](https://codeforces.com/contest/1000/problem/B) | [C++17 (GCC 7-32)](https://codeforces.com/contest/1000/submission/123456788) | `greedy` `implementation` `*1300` | Jul/10/2024 |
+| 242 | [A - Travelling Merchant](https://codeforces.com/contest/1000/problem/A) | [Python 3](https://codeforces.com/contest/1000/submission/123456787) | `math` `*900` | Jul/09/2024 |
+| 241 | [Private Contest Problem](https://codeforces.com/contest/999) | [C++17 (GCC 7-32)](https://codeforces.com/contest/999/submission/123456786) | | Jul/08/2024 |
+
+---
+
+**Total Solved Problems:** 244
+
+**Note:** 
+- Difficulty ratings are shown with an asterisk (e.g., `*1200`) after the problem tags.
+- Private contest submissions are included and marked as "Private Contest Problem"
+- All accepted submissions are captured, even if problem details are inaccessible
 | 15 | [A - Watermelon](https://codeforces.com/contest/4/problem/A) | [GNU C++17](https://codeforces.com/contest/4/submission/123456789) | `brute force` `math` `*800` | Dec/15/2024 14:30 |
 | 14 | [B - Way Too Long Words](https://codeforces.com/contest/71/problem/A) | [Python 3](https://codeforces.com/contest/71/submission/123456788) | `strings` `*1000` | Dec/14/2024 16:22 |
 
