@@ -28,6 +28,7 @@ A Python tool to fetch and organize your Codeforces submissions with automatic R
    ```bash
    git clone https://github.com/Andrew-Velox/codeforces-submission-fetcher.git
    cd codeforces-submission-fetcher
+   git pull origin main
    ```
 
 2. Install required dependencies:
